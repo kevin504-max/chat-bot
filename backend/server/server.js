@@ -16,7 +16,7 @@ class ApiServer {
         app.use(cors({ origin: true, credentials: true }));
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
-        app.use('/api/', require('..router/chatApplicationRoutes.js'));
+        app.use('/api/', require('../router/applicationRoutes.js'));
         app.get('/', (request, response) => {
             response.status(200).json({ message: 'Welcome to the chat bot application! '});
         });
