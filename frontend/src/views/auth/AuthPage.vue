@@ -84,21 +84,19 @@ export default {
             'Accept': 'application/json',
         },
       }).then((response) => {
-          console.log(response);
           this.$swal({
               icon: 'success',
               title: 'Success!',
-              text: 'Login successful!',
+              text: response.data.message,
               showConfirmButton: false,
               timer: 2000
           });
           this.$router.push({ name: 'chat' });
       }).catch((error) => {
-          console.error('Login Error: ', error);
           this.$swal({
               icon: 'error',
               title: 'Oops...',
-              text: 'Something went wrong! Try again.',
+              text: error.response.data.message,
               showConfirmButton: false,
               timer: 2000
           });

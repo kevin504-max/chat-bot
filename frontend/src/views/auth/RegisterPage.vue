@@ -51,7 +51,7 @@
                                         <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                                         <div class="form-outline flex-fill mb-0">
                                             <input 
-                                            v-model="password_confirmation"
+                                            v-model="confirmPassword"
                                             type="password" id="form3Example4c" class="form-control" 
                                             placeholder="Confirm your password..."
                                             />
@@ -92,47 +92,34 @@ export default {
             'name': '',
             'email': '',
             'password': '',
-            'password_confirmation': ''
+            'confirmPassword': ''
         };
     },
     methods: {
         register () {
-            if (this.password !== this.password_confirmation) {
-                this.$swal({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Passwords do not match!',
-                    showConfirmButton: false,
-                    timer: 2500
-                });
-
-                return;
-            }
-
-            const payload = {
+           const payload = {
                 username: this.username,
                 email: this.email,
                 password: this.password,
+                confirmPassword: this.confirmPassword,
             };
             
             axios.post('register', payload).then((response) => {
-                console.log('Response: ', response)
                 this.$swal({
                     icon: 'success',
                     title: 'Sucess!',
-                    text: 'Your account has been created',
+                    text: response.data.message,
                     showConfirmButton: false,
                     timer: 2500
                 })
                 setTimeout(() => {
-                    window.location.reload();
+                    this.$router.push({ name: 'chat' })
                 }, 2000);
             }).catch((error) => {
-                console.log('Register Error: ', error);
                 this.$swal({
-                    icon: 'warning',
+                    icon: 'error',
                     title: 'Oops...',
-                    text: 'Something went wrong! Try again.',
+                    text: error.response.data.message,
                     showConfirmButton: false,
                     timer: 2500
                 })
