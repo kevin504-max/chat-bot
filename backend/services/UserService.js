@@ -97,7 +97,7 @@ module.exports = class UserService {
 
     findUser = async (userId) => {
         try {
-            return await User.findOne({ id: userId });
+            return await User.findOne({ _id: userId });
         } catch (error) {
             console.error('UserService::findUser ', error);
             throw `Error ${error}`;
