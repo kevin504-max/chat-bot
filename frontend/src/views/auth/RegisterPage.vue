@@ -117,6 +117,8 @@ export default {
                     },
                 })
                 .then((response) => {
+                    localStorage.setItem("token", response.data.token);
+
                     Swal.fire({
                         icon: "success",
                         title: "Success!",
