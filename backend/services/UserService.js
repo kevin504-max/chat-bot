@@ -45,7 +45,11 @@ module.exports = class UserService {
 
         try {
             await newUser.save();
-            return { status: 201, message: "User created successfully!" };            
+
+            const secret = process.env.JWT_SECRET;
+            const token = jwt.sign({ id: newUser._id }, secret);
+
+            return { status: 201, message: "User created successfully!", token: token };            
         } catch (error) {
             console.error('UserService::registerUser ', error);
             throw `Error ${error}`;
