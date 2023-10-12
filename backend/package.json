@@ -20,6 +20,7 @@
     "express": "^4.18.2",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.6.1"
+    "mongoose": "^7.6.1",
+    "telegraf": "3.17.3"
   }
 }
