@@ -73,6 +73,17 @@ export default {
     const password = ref("");
     const router = useRouter();
 
+    if (localStorage.getItem("token")) {
+      router.push({ name: "chat" });
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "You are already logged in!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+
     const login = () => {
       const payload = {
         email: email.value,
@@ -109,16 +120,16 @@ export default {
         });
     };
 
-      const goToRegister = () => {
-        router.push({ name: "register" });
-      };
+    const goToRegister = () => {
+      router.push({ name: "register" });
+    };
 
-      return {
-        email,
-        password,
-        login,
-        goToRegister,
-      };
+    return {
+      email,
+      password,
+      login,
+      goToRegister,
+    };
   },
 };
 </script>

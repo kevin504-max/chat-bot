@@ -101,6 +101,17 @@ export default {
         const confirmPassword = ref("");
         const router = useRouter();
 
+        if (localStorage.getItem("token")) {
+            router.push({ name: "chat" });
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "You are already logged in!",
+                showConfirmButton: false,
+                timer: 2000,
+            });
+        }
+        
         const register = () => {
             const payload = {
                 username: username.value,
