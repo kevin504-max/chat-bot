@@ -1,4 +1,5 @@
 const ApiServer = require('./server/server');
+const BotServer = require('./server/botServer')
 
 const startApplication = async () => {
     try {
@@ -14,8 +15,18 @@ const startApplication = async () => {
                 console.log(`Application listening on port ${config.port}!`);
             });
         }).catch((error) => {
-            console.log('Error: ', error);
+            console.log('Api Server Error: ', error);
             throw `Error: ${error}.`;
+        });
+
+        const botServer = new BotServer();
+
+        botServer.initialize().then(() => {
+            botServer.getBot().startPolling();            
+            console.log('Bot started successfully!');
+        }).catch((error) => {
+            console.log('Bot Server Eerror: ', error);
+            throw `Error: ${error}`
         });
     } catch (error) {
         console.log('Error starting application: ', error);
