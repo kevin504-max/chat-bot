@@ -1,5 +1,7 @@
 const UserService = require('./UserService');
+const BotServices = require('./BotServices');
 
 module.exports = {
-    UserService: UserService
+    UserService: UserService,
+    BotServices: BotServices
 };
