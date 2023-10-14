@@ -1,13 +1,26 @@
 <template>
   <div id="app">
+    <SpinnerComponent :start="spin.value" />
     <router-view />
   </div>
 </template>
 
 <script>
+import SpinnerComponent from './components/SpinnerComponent.vue';
+
 export default {
   name: 'App',
-  
+  components: {
+    SpinnerComponent,
+  },
+  data () {
+    return {
+      spin: { value: false }
+    }
+  },
+  provide () {
+    return { makeSpin: this.spin }
+  },
 }
 </script>
 

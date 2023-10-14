@@ -40,6 +40,7 @@
 
     export default {
         name: "ChatPage",
+        inject: ['makeSpin'],
         data() {
             return {
                 messages: [
@@ -62,12 +63,19 @@
                 });
             }
 
+            this.makeSpin.value = true;
+
             this.getMessages();
+            
+            setTimeout(() => {
+                this.makeSpin.value = false;
+            }, 1500);
         },
         methods: {
             async getMessages() {
                 try {
                     const response = await axios.get(`users/${localStorage.getItem('username')}/messages`);
+                    
                     this.messages = response.data.userMessages || [];
 
                     this.$nextTick(() => {
