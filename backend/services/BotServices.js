@@ -1,9 +1,5 @@
-/**
- * Service responsible for retrieving weather data using the openweathermap.org API
-*/
 const env = require('../.env')
 const axios = require('axios');
-
 module.exports = class BotServices {
     getWeather = async (cityName) => {
         try {
@@ -19,7 +15,7 @@ module.exports = class BotServices {
     
             return message;
         } catch (error) {
-            console.error('WeatherService::getWeather ', error);
+            console.error('BotServices::getWeather ', error);
             return `There was an error retrieving the weather for "${cityName}"!`;
         }
     }
@@ -44,7 +40,7 @@ module.exports = class BotServices {
     
             return message;
         } catch (error) {
-            console.error('WeatherService::getNews ', error);
+            console.error('BotServices::getNews ', error);
             return `There was an error retrieving the news!`;
         }
     }
@@ -68,7 +64,7 @@ module.exports = class BotServices {
 
             return message;
         } catch (error) {
-            console.error('WeatherService::currencyConverter ', error);
+            console.error('BotServices::currencyConverter ', error);
             return `There was an error converting the currency!`;
         }
     }
@@ -111,7 +107,7 @@ module.exports = class BotServices {
 
             return 'Search results: https://www.google.com/search?q=' + searchTerm;
         } catch (error) {
-            console.error('WeatherService::searchOnWeb ', error);
+            console.error('BotServices::searchOnWeb ', error);
             return `There was an error searching on the web!`;
         }
     }
@@ -126,7 +122,7 @@ module.exports = class BotServices {
 
             return response.data.setup + ' ' + response.data.punchline;
         } catch (error) {
-            console.error('WeatherService::searchOnWeb ', error);
+            console.error('BotServices::searchOnWeb ', error);
             return `There was an error searching on the web!`;
         }
     }
