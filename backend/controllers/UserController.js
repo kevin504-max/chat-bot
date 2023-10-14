@@ -60,4 +60,21 @@ module.exports = class UserController {
             response.status(500).json({ message: 'Something went wrong! Try again.' });
         }
     }
+
+    getUserMessages = async (request, response) => {
+        try {
+            const messages = await userService.getUserMessages(request.params.username);
+
+            if (! messages || messages.length === 0) {
+                return response.status(404).json({ message: 'No messages found!' });
+            } else if (Object.keys(messages).length === 0) {
+                return response.status(204).json({ message: 'No messages found!' });
+            }
+
+            return response.status(200).json({ userMessages: messages });
+        } catch (error) {
+            console.error('UserController::getUserMessages ', error);
+            response.status(500).json({ message: 'Something went wrong! Try again.' });
+        }
+    }
 }
