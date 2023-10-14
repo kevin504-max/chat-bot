@@ -50,7 +50,7 @@ module.exports = class UserService {
             const secret = process.env.JWT_SECRET;
             const token = jwt.sign({ id: newUser._id }, secret);
 
-            return { status: 201, message: "User created successfully!", token: token };            
+            return { status: 201, message: "User created successfully!", token: token, username: newUser.username };            
         } catch (error) {
             console.error('UserService::registerUser ', error);
             throw `Error ${error}`;
@@ -84,7 +84,7 @@ module.exports = class UserService {
             const secret = process.env.JWT_SECRET;
             const token = jwt.sign({ id: user._id }, secret);
 
-            return { status: 200, message: "User logged in successfully!", token: token };            
+            return { status: 200, message: "User logged in successfully!", token: token, username: user.username };            
         } catch (error) {
             console.error('UserService::loginUser ', error);
             throw `Error ${error}`;
