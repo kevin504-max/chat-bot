@@ -2,42 +2,103 @@ const env = require('../.env')
 const Telegraf = require('telegraf');
 const { BotServices } = require('../services');
 const botService = new BotServices();
+const { Message } = require('../models/Message');
 
 class BotServer {
     constructor () {}
+
+    saveBotMessages = async (message, sendTo) => {
+        try {
+            // Save the bot message
+            const botMessage = new Message({
+                username: 'Bot',
+                message: message,
+                date: new Date(),
+                sendTo: sendTo,
+            });
+
+            await botMessage.save();
+        } catch (error) {
+            console.error('BotServices::saveBotMessages ', error);
+            return `There was an error saving the message!`;
+        }
+    }
 
     initialize = async () => {
         // Instantiate a new bot
         const bot = new Telegraf(env.botToken);
 
+        // Middleware to save messages to the database
+        bot.use(async (ctx, next) => {
+            const messageText = ctx.message.text || '';
+
+            if (ctx.message.from) {
+                // Save the user message
+                const userMessage = new Message({
+                    username: ctx.message.from.first_name,
+                    message: messageText,
+                    date: new Date(),
+                    sendTo: 'Bot',
+                });
+
+                await userMessage.save();
+            }
+
+            // Continue to the next middleware
+            await next();
+        });
+
         // Listen to the /start command
-        bot.command('start', (ctx) => ctx.reply(`Welcome ${ctx.message.from.first_name}!`));
+        bot.command('start', (ctx) => {
+            const message = `Welcome ${ctx.message.from.first_name}!`;
+            
+            this.saveBotMessages(message, ctx.message.from.first_name);            
+            ctx.reply(message);
+        });
 
         // Listen to the /info command
         bot.command('info', (ctx) => {
-            ctx.reply(`
+            const message = `
                 Info message here!
-            `);
+            `;
+
+            this.saveBotMessages(message, ctx.message.from.first_name);
+            ctx.reply(message, ctx.message.from.first_name);
         });
 
         // Listen to the /help command
         bot.command('help', (ctx) => {
-            ctx.reply(`
+            const message = `
                 Help message here!
-            `);
+            `;
+            
+            this.saveBotMessages(message, ctx.message.from.first_name);
+            ctx.reply(message);
         });
 
         // Listen to the /weather command
-        bot.command('weather', async (ctx) => ctx.reply(await botService.getWeather(ctx.message.text.replace('/weather ', ''))));
+        bot.command('weather', async (ctx) => {
+            const message = await botService.getWeather(ctx.message.text.replace('/weather ', ''));
+            
+            this.saveBotMessages(message, ctx.message.from.first_name);
+            ctx.reply(message);
+        });
 
         // Listen to the /news command
-        bot.command('news', async (ctx) => ctx.reply(await botService.getNews()));
+        bot.command('news', async (ctx) => {
+            const message = await botService.getNews();
+            
+            this.saveBotMessages(message, ctx.message.from.first_name);
+            ctx.reply(message);
+        });
 
         // Listen to the /currency command
         bot.command('currency', async (ctx) => {
-            const message = ctx.message.text.replace('/currency ', '').split(' ');
-
-            ctx.reply(await botService.currencyConverter(message[0], message[1], message[2]));
+            const inputMessage = ctx.message.text.replace('/currency ', '').split(' ');
+            const message = await botService.currencyConverter(inputMessage[0], inputMessage[1], inputMessage[2]);
+            
+            this.saveBotMessages(message, ctx.message.from.first_name);
+            ctx.reply(message);
         });
 
         // Listen to the /search command
@@ -49,12 +110,18 @@ class BotServer {
                 return;
             }
 
-            ctx.reply(await botService.searchOnWeb(searchTerm));
+            const message = await botService.searchOnWeb(searchTerm);
+            
+            this.saveBotMessages(message, ctx.message.from.first_name);
+            ctx.reply(message);
         }); 
 
         // Listen to /joke command
         bot.command('joke', async (ctx) => {
-            ctx.reply(await botService.getJoke());
+            const message = await botService.getJoke();
+
+            this.saveBotMessages(message, ctx.message.from.first_name);
+            ctx.reply(message);
         });
 
         this.bot = bot;
