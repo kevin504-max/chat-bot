@@ -1,15 +1,13 @@
 <template>
-  <AuthPage msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <router-view />
+  </div>
 </template>
 
 <script>
-import AuthPage from './views/auth/AuthPage.vue'
-
 export default {
   name: 'App',
-  components: {
-    AuthPage
-  }
+  
 }
 </script>
 
@@ -20,6 +18,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  height: 100vh;
+  background: linear-gradient(to right, #88b884 0%, #d6dab8 100%);
 }
 </style>
