@@ -1,6 +1,7 @@
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models/User');
+const { Message } = require('../models/Message');
 
 module.exports = class UserService {
     constructor () {}
@@ -104,6 +105,21 @@ module.exports = class UserService {
             return await User.findOne({ _id: userId });
         } catch (error) {
             console.error('UserService::findUser ', error);
+            throw `Error ${error}`;
+        }
+    }
+
+    getUserMessages = async (userId) => {
+        try {
+            // Get all messages sent to or from the user
+            const userMessages = await Message.find({ $or: [{ sendTo: userId }, { username: userId }] });
+
+            // Sort the messages by date
+            userMessages.sort((a, b) => a.date - b.date);
+            
+            return userMessages;
+        } catch (error) {
+            console.error('UserService::getUserMessages ', error);
             throw `Error ${error}`;
         }
     }
