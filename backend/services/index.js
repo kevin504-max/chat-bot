@@ -1,9 +1,9 @@
 const UserService = require('./UserService');
-const BotServices = require('./BotServices');
+const BotService = require('./BotService');
 const MessageService = require('./MessageService');
 
 module.exports = {
     UserService: UserService,
-    BotServices: BotServices,
+    BotService: BotService,
     MessageService: MessageService
 };

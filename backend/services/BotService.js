@@ -1,6 +1,6 @@
 const env = require('../.env')
 const axios = require('axios');
-module.exports = class BotServices {
+module.exports = class BotService {
     getWeather = async (cityName) => {
         try {
             const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${env.weatherApiKey}`);
@@ -15,7 +15,7 @@ module.exports = class BotServices {
     
             return message;
         } catch (error) {
-            console.error('BotServices::getWeather ', error);
+            console.error('BotService::getWeather ', error);
             return `There was an error retrieving the weather for "${cityName}"!`;
         }
     }
@@ -40,7 +40,7 @@ module.exports = class BotServices {
     
             return message;
         } catch (error) {
-            console.error('BotServices::getNews ', error);
+            console.error('BotService::getNews ', error);
             return `There was an error retrieving the news!`;
         }
     }
@@ -68,7 +68,7 @@ module.exports = class BotServices {
 
             return message;
         } catch (error) {
-            console.error('BotServices::currencyConverter ', error);
+            console.error('BotService::currencyConverter ', error);
             return `There was an error converting the currency!`;
         }
     }
@@ -107,7 +107,7 @@ module.exports = class BotServices {
 
             return 'Search results: https://www.google.com/search?q=' + searchTerm;
         } catch (error) {
-            console.error('BotServices::searchOnWeb ', error);
+            console.error('BotService::searchOnWeb ', error);
             return `There was an error searching on the web!`;
         }
     }
@@ -122,7 +122,7 @@ module.exports = class BotServices {
 
             return response.data.setup + ' ' + response.data.punchline;
         } catch (error) {
-            console.error('BotServices::searchOnWeb ', error);
+            console.error('BotService::searchOnWeb ', error);
             return `There was an error searching on the web!`;
         }
     }

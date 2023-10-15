@@ -1,7 +1,7 @@
 const env = require('../.env')
 const Telegraf = require('telegraf');
-const { BotServices } = require('../services');
-const botService = new BotServices();
+const { BotService } = require('../services');
+const botService = new BotService();
 const { Message } = require('../models/Message');
 
 class BotServer {
@@ -20,7 +20,7 @@ class BotServer {
 
             await botMessage.save();
         } catch (error) {
-            console.error('BotServices::saveBotMessages ', error);
+            console.error('BotService::saveBotMessages ', error);
             return `There was an error saving the message!`;
         }
     }
