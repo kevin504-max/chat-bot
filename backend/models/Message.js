@@ -26,6 +26,12 @@ const MessageSchema = new Schema({
         trim: true,
         minlength: 3
     },
+    chatId: {
+        type: Number,
+        required: true,
+        trim: true,
+        minlength: 1
+    }
 });
 
 module.exports.Message = mongoose.model('Message', MessageSchema);
