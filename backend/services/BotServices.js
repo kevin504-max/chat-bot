@@ -47,6 +47,10 @@ module.exports = class BotServices {
 
     currencyConverter = async (currencyFrom, currencyTo, amount) => {
         try {
+            if (amount.indexOf(',') > -1) {
+                amount = amount.replace(',', '.');
+            }
+
             const errorMessage = this.validateCurrencyInput(currencyFrom, currencyTo, amount);
             if (errorMessage) {
                 return errorMessage;
@@ -69,11 +73,7 @@ module.exports = class BotServices {
         }
     }
 
-    validateCurrencyInput = (currencyFrom, currencyTo, amount) => {
-        if (amount.indexOf(',') > -1) {
-            amount = amount.replace(',', '.');
-        }
-        
+    validateCurrencyInput = (currencyFrom, currencyTo, amount) => {        
         if (currencyFrom === currencyTo) {
             return 'The currencies must be different!';
         }
