@@ -7,7 +7,7 @@ const { Message } = require('../models/Message');
 class BotServer {
     constructor () {}
 
-    saveBotMessages = async (message, sendTo) => {
+    saveBotMessages = async (message, sendTo, chatId) => {
         try {
             // Save the bot message
             const botMessage = new Message({
@@ -15,6 +15,7 @@ class BotServer {
                 message: message,
                 date: new Date(),
                 sendTo: sendTo,
+                chatId: chatId
             });
 
             await botMessage.save();
@@ -39,6 +40,7 @@ class BotServer {
                     message: messageText,
                     date: new Date(),
                     sendTo: 'Bot',
+                    chatId: ctx.message.chat.id,
                 });
 
                 await userMessage.save();
@@ -50,9 +52,10 @@ class BotServer {
 
         // Listen to the /start command
         bot.command('start', (ctx) => {
+            console.log('ctx.message ', ctx.message);
             const message = `Welcome ${ctx.message.from.first_name}!`;
             
-            this.saveBotMessages(message, ctx.message.from.first_name);            
+            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);            
             ctx.reply(message);
         });
 
@@ -62,7 +65,7 @@ class BotServer {
                 Info message here!
             `;
 
-            this.saveBotMessages(message, ctx.message.from.first_name);
+            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
             ctx.reply(message, ctx.message.from.first_name);
         });
 
@@ -72,7 +75,7 @@ class BotServer {
                 Help message here!
             `;
             
-            this.saveBotMessages(message, ctx.message.from.first_name);
+            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
             ctx.reply(message);
         });
 
@@ -80,7 +83,7 @@ class BotServer {
         bot.command('weather', async (ctx) => {
             const message = await botService.getWeather(ctx.message.text.replace('/weather ', ''));
             
-            this.saveBotMessages(message, ctx.message.from.first_name);
+            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
             ctx.reply(message);
         });
 
@@ -88,7 +91,7 @@ class BotServer {
         bot.command('news', async (ctx) => {
             const message = await botService.getNews();
             
-            this.saveBotMessages(message, ctx.message.from.first_name);
+            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
             ctx.reply(message);
         });
 
@@ -97,7 +100,7 @@ class BotServer {
             const inputMessage = ctx.message.text.replace('/currency ', '').split(' ');
             const message = await botService.currencyConverter(inputMessage[0], inputMessage[1], inputMessage[2]);
             
-            this.saveBotMessages(message, ctx.message.from.first_name);
+            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
             ctx.reply(message);
         });
 
@@ -112,7 +115,7 @@ class BotServer {
 
             const message = await botService.searchOnWeb(searchTerm);
             
-            this.saveBotMessages(message, ctx.message.from.first_name);
+            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
             ctx.reply(message);
         }); 
 
@@ -120,7 +123,7 @@ class BotServer {
         bot.command('joke', async (ctx) => {
             const message = await botService.getJoke();
 
-            this.saveBotMessages(message, ctx.message.from.first_name);
+            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
             ctx.reply(message);
         });
 
