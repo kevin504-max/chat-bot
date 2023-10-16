@@ -3,7 +3,7 @@ const Telegraf = require('telegraf');
 const { BotService } = require('../services');
 const botService = new BotService();
 const { Message } = require('../models/Message');
-const OpenAI = require('openai');
+// const OpenAI = require('openai');
 
 class BotServer {
     constructor () {}
@@ -13,7 +13,7 @@ class BotServer {
         const bot = new Telegraf(env.botToken);
 
         // Instantiate a new OpenAI
-        const openai = new OpenAI({apiKey: env.openAiKey});
+        // const openai = new OpenAI({apiKey: env.openAiKey});
 
         // Middleware to save messages to the database
         bot.use(async (ctx, next) => {
@@ -123,18 +123,38 @@ class BotServer {
                     return;
                 }
 
-                const chatCompletion = await openai.chat.completions.create({
-                    model: 'text-davinci-003',
-                    prompt: ctx.message.text,
-                    temperature: 0.9,
-                    max_tokens: 3000,
-                    top_p: 1,
-                    frequency_penalty: 0.5,
-                    presence_penalty: 0,
-                });
+                const possibleMessages = [
+                    'Sorry, I did not understand that!',
+                    'Sorry, could you repeat that?',
+                    'Sorry, I did not get that!',
+                    'I can only respond to predefined commands.',
+                    'Please use one of the available commands.',
+                    'I am programmed to understand specific commands.',
+                    'You can choose from the following predefined commands.',
+                ];
 
-                console.log(chatCompletion)
-                ctx.reply(chatCompletion.data.choices[0].text);
+                const randomIndex = Math.floor(Math.random() * possibleMessages.length);
+                console.log(randomIndex);
+                const message = possibleMessages[randomIndex];
+
+                this.saveBotMessages(message, username, ctx.message.chat.id);
+                ctx.reply(`${message}\nType /help to see the available commands.`);
+
+                // TRYING TO IMPLEMENT OPENAI 
+                // =========================================================================================
+                // const chatCompletion = await openai.chat.completions.create({
+                //     model: 'text-davinci-003',
+                //     prompt: ctx.message.text,
+                //     temperature: 0.9,
+                //     max_tokens: 3000,
+                //     top_p: 1,
+                //     frequency_penalty: 0.5,
+                //     presence_penalty: 0,
+                // });
+
+                // console.log(chatCompletion)
+                // ctx.reply(chatCompletion.data.choices[0].text);
+                // ==========================================================================================
             } catch (error) {
                 console.error("Error sending a message: ", error);
             }

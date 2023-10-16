@@ -5,55 +5,53 @@ module.exports = class BotService {
     buildBotMessage = async (message, chatId, username) => {
         try {
             const bot = new Telegraf(env.botToken);
-            let replyMessage = "Defaul Message Here!";
+            let replyMessage = "Default Message Here!";
+            const possibleMessages = [
+                'Sorry, I did not understand that!',
+                'Sorry, could you repeat that?',
+                'Sorry, I did not get that!',
+                'I can only respond to predefined commands.',
+                'Please use one of the available commands.',
+                'I am programmed to understand specific commands.',
+                'You can choose from the following predefined commands.',
+            ];
             
             if (message === 'ping') {
                 replyMessage = 'pong';
                 bot.telegram.sendMessage(chatId, replyMessage);
-            }
-
-            if (message === '/start') {
+            } else if (message === '/start') {
                 replyMessage = `Welcome ${username}!`;
                 bot.telegram.sendMessage(chatId, replyMessage);
-            }
-
-            if (message === '/help') {
+            } else if (message === '/help') {
                 replyMessage = 'Help message here!';
                 bot.telegram.sendMessage(chatId, replyMessage);
-            }
-
-            if (message === '/info') {
+            } else if (message === '/info') {
                 replyMessage = 'Info message here!';
                 bot.telegram.sendMessage(chatId, replyMessage);
-            }
-
-            if (message.indexOf('/weather') > -1) {
+            } else if (message.indexOf('/weather') > -1) {
                 const cityName = message.replace('/weather', '').trim();
                 replyMessage = await this.getWeather(cityName);
                 bot.telegram.sendMessage(chatId, replyMessage);
-            }
-
-            if (message.indexOf('/news') > -1) {
+            } else if (message.indexOf('/news') > -1) {
                 replyMessage = await this.getNews();
                 bot.telegram.sendMessage(chatId, replyMessage);
-            }
-
-            if (message.indexOf('/currency') > -1) {
+            } else if (message.indexOf('/currency') > -1) {
                 const currencyFrom = message.split(' ')[1];
                 const currencyTo = message.split(' ')[2];
                 const amount = message.split(' ')[3];
                 replyMessage = await this.currencyConverter(currencyFrom, currencyTo, amount);
                 bot.telegram.sendMessage(chatId, replyMessage);
-            }
-
-            if (message.indexOf('/search') > -1) {
+            } else if (message.indexOf('/search') > -1) {
                 const searchTerm = message.replace('/search', '').trim();
                 replyMessage = await this.searchOnWeb(searchTerm);
                 bot.telegram.sendMessage(chatId, replyMessage);
-            }
-
-            if (message.indexOf('/joke') > -1) {
+            } else if (message.indexOf('/joke') > -1) {
                 replyMessage = await this.getJoke();
+                bot.telegram.sendMessage(chatId, replyMessage);
+            } else {
+                const randomIndex = Math.floor(Math.random() * possibleMessages.length);
+                replyMessage = `${possibleMessages[randomIndex]}
+                - Type /help to see the available commands.`;
                 bot.telegram.sendMessage(chatId, replyMessage);
             }
 
