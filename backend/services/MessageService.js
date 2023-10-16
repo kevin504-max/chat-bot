@@ -7,13 +7,15 @@ module.exports = class MessageService {
         try {
             const { username, message, chatId } = params;
 
+            this.saveUserMessage(params);
+
+            const botMessageReceive = `Message received from ${username} via external plataform:\n ${message}`;
+
             const bot = new Telegraf(env.botToken);
-            await bot.telegram.sendMessage(chatId, message, {
-                from: username
-            });
 
-            this.saveMessage(params);
-
+            // Send the message to the user via Telegram
+            await bot.telegram.sendMessage(chatId, botMessageReceive);
+            
             return { status: 201, message: "Message sent successfully!" };
         } catch (error) {
             console.error('MessageService::sendMessage ', error);
@@ -21,7 +23,7 @@ module.exports = class MessageService {
         }
     }
 
-    saveMessage = async (params) => {
+    saveUserMessage = async (params) => {
         try {
             const { username, message, sendTo, chatId } = params;
 
@@ -36,6 +38,23 @@ module.exports = class MessageService {
             await newMessage.save();
         } catch (error) {
             console.error('MessageService::saveMessage ', error);
+            throw `Error ${error}`;
+        }
+    }
+
+    saveBotMessage = async (message, sendTo, chatId) => {
+        try {
+            const botMessage = new Message({
+                username: 'Bot',
+                message: message,
+                date: new Date(),
+                sendTo: sendTo,
+                chatId: chatId
+            });
+
+            await botMessage.save();
+        } catch (error) {
+            console.error('BotService::saveBotMessages ', error);
             throw `Error ${error}`;
         }
     }

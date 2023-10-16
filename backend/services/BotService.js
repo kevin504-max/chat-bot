@@ -1,6 +1,69 @@
 const env = require('../.env')
+const Telegraf = require('telegraf');
 const axios = require('axios');
 module.exports = class BotService {
+    buildBotMessage = async (message, chatId, username) => {
+        try {
+            const bot = new Telegraf(env.botToken);
+            let replyMessage = "Defaul Message Here!";
+            
+            if (message === 'ping') {
+                replyMessage = 'pong';
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            if (message === '/start') {
+                replyMessage = `Welcome ${username}!`;
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            if (message === '/help') {
+                replyMessage = 'Help message here!';
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            if (message === '/info') {
+                replyMessage = 'Info message here!';
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            if (message.indexOf('/weather') > -1) {
+                const cityName = message.replace('/weather', '').trim();
+                replyMessage = await this.getWeather(cityName);
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            if (message.indexOf('/news') > -1) {
+                replyMessage = await this.getNews();
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            if (message.indexOf('/currency') > -1) {
+                const currencyFrom = message.split(' ')[1];
+                const currencyTo = message.split(' ')[2];
+                const amount = message.split(' ')[3];
+                replyMessage = await this.currencyConverter(currencyFrom, currencyTo, amount);
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            if (message.indexOf('/search') > -1) {
+                const searchTerm = message.replace('/search', '').trim();
+                replyMessage = await this.searchOnWeb(searchTerm);
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            if (message.indexOf('/joke') > -1) {
+                replyMessage = await this.getJoke();
+                bot.telegram.sendMessage(chatId, replyMessage);
+            }
+
+            return replyMessage;
+        } catch (error) {
+            console.error('BotService::buildBotMessage ', error);
+            throw `Error ${error}`;
+        }
+    }
+
     getWeather = async (cityName) => {
         try {
             const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${env.weatherApiKey}`);
