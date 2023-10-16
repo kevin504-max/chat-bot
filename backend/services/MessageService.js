@@ -9,7 +9,7 @@ module.exports = class MessageService {
 
             this.saveUserMessage(params);
 
-            const botMessageReceive = `Message received from ${username} via external plataform:\n ${message}`;
+            const botMessageReceive = `Message received via external plataform:\n${username}: ${message}`;
 
             const bot = new Telegraf(env.botToken);
 
