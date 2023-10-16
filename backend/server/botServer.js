@@ -52,7 +52,6 @@ class BotServer {
 
         // Listen to the /start command
         bot.command('start', (ctx) => {
-            console.log('ctx.message ', ctx.message);
             const message = `Welcome ${ctx.message.from.first_name}!`;
             
             this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);            
