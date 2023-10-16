@@ -3,31 +3,17 @@ const Telegraf = require('telegraf');
 const { BotService } = require('../services');
 const botService = new BotService();
 const { Message } = require('../models/Message');
+const OpenAI = require('openai');
 
 class BotServer {
     constructor () {}
 
-    saveBotMessages = async (message, sendTo, chatId) => {
-        try {
-            // Save the bot message
-            const botMessage = new Message({
-                username: 'Bot',
-                message: message,
-                date: new Date(),
-                sendTo: sendTo,
-                chatId: chatId
-            });
-
-            await botMessage.save();
-        } catch (error) {
-            console.error('BotService::saveBotMessages ', error);
-            return `There was an error saving the message!`;
-        }
-    }
-
     initialize = async () => {
         // Instantiate a new bot
         const bot = new Telegraf(env.botToken);
+
+        // Instantiate a new OpenAI
+        const openai = new OpenAI({apiKey: env.openAiKey});
 
         // Middleware to save messages to the database
         bot.use(async (ctx, next) => {
@@ -126,7 +112,53 @@ class BotServer {
             ctx.reply(message);
         });
 
+        bot.on('message', async (ctx) => {
+            try {
+                const chatId = ctx.message.chat.id;
+                const username = ctx.message.from.first_name;
+
+                if (ctx.message.text === 'ping') {
+                    this.saveBotMessages('pong', username, chatId);
+                    ctx.reply('pong');
+                    return;
+                }
+
+                const chatCompletion = await openai.chat.completions.create({
+                    model: 'text-davinci-003',
+                    prompt: ctx.message.text,
+                    temperature: 0.9,
+                    max_tokens: 3000,
+                    top_p: 1,
+                    frequency_penalty: 0.5,
+                    presence_penalty: 0,
+                });
+
+                console.log(chatCompletion)
+                ctx.reply(chatCompletion.data.choices[0].text);
+            } catch (error) {
+                console.error("Error sending a message: ", error);
+            }
+        });
+
         this.bot = bot;
+    }
+
+    saveBotMessages = async (message, sendTo, chatId) => {
+        try {
+            // Save the bot message
+            const botMessage = new Message({
+                username: 'Bot',
+                message: message,
+                date: new Date(),
+                sendTo: sendTo,
+                chatId: chatId
+            });
+
+            await botMessage.save();
+        } catch (error) {
+            console.error('BotService::saveBotMessages ', error);
+            return `There was an error saving the message!`;
+        }
     }
 
     getBot = () => {
