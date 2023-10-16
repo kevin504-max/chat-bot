@@ -60,6 +60,7 @@
                                             <label class="form-label mt-3" for="form3Example5c">Confirm Password</label>
                                         </div>
                                     </div>
+                                    <p class="text-success">*Remember to start the bot before make the authentication!</p>
                                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4 gap-3">
                                         <button type="submit" class="btn btn-primary btn-lg">Register</button>
                                         <button

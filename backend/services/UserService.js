@@ -116,6 +116,15 @@ module.exports = class UserService {
 
             // Sort the messages by date
             userMessages.sort((a, b) => a.date - b.date);
+
+            if (! userMessages || userMessages.length === 0) {
+                const defaultMessage = {
+                    username: 'Bot',
+                    message: 'You must logout and start the bot in Telegram first!',
+                };
+
+                return [defaultMessage];
+            }
             
             return userMessages;
         } catch (error) {
