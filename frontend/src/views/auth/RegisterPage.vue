@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
@@ -101,6 +101,7 @@ export default {
         const password = ref("");
         const confirmPassword = ref("");
         const router = useRouter();
+        let makeSpin = inject('makeSpin');
 
         if (localStorage.getItem("token")) {
             router.push({ name: "chat" });
@@ -120,6 +121,8 @@ export default {
                 password: password.value,
                 confirmPassword: confirmPassword.value,
             };
+
+            makeSpin.value = true;
             
             axios
                 .post("register", payload, {
@@ -131,6 +134,8 @@ export default {
                 .then((response) => {
                     localStorage.setItem("token", response.data.token);
                     localStorage.setItem("username", response.data.username);
+
+                    makeSpin.value = false;
 
                     Swal.fire({
                         icon: "success",

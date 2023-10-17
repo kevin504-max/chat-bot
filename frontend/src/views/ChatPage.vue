@@ -36,53 +36,33 @@
 </template>
 
 <script>
+import { ref, onMounted, inject, nextTick } from 'vue';
 import axios from 'axios';
+import { useRouter} from "vue-router";
+import Swal from "sweetalert2";
 
 export default {
     name: "ChatPage",
-    inject: ['makeSpin'],
-    data() {
-        return {
-            messages: [],
-            messageContent: '',
-            chatId: '',
-        }
-    },
-    mounted() {
-        if (!localStorage.getItem('token')) {
-            this.$router.push({ name: 'login' });
-            this.$swal({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'You must be logged in to access this page!',
-                showConfirmButton: false,
-                timer: 2000,
-            });
-        }
-        
-        this.makeSpin.value = true;
-        
-        this.getMessages();
-        
-        setTimeout(() => {
-            this.makeSpin.value = false;
-        }, 1500);
-    },
-    methods: {
-        async getMessages() {
+    setup() {
+        const messages = ref([]);
+        const messageContent = ref('');
+        const chatId = ref('');
+        const router = useRouter();
+        let makeSpin = inject('makeSpin');
+
+        const getMessages = async () => {
             try {
                 const response = await axios.get(`users/${localStorage.getItem('username')}/messages`);
-                
-                this.messages = response.data.userMessages;
-                
-                this.chatId = this.messages[0].chatId;
-                
-                this.$nextTick(() => {
-                    this.scrollToBottom();
-                });
+
+                messages.value = response.data.userMessages;
+
+                chatId.value = messages.value[0].chatId;
+
+                await nextTick();
+                scrollToBottom();
             } catch (error) {
                 console.error("Error getting messages: ", error);
-                this.$swal({
+                    Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Something went wrong!',
@@ -90,54 +70,94 @@ export default {
                     timer: 2000,
                 });
             }
-        },
-        
-        async sendMessage() {
+        };
+
+        const sendMessage = async () => {
             try {
-                await axios.post(`${this.chatId}/send-message`, {
-                    message: this.messageContent,
-                    username: localStorage.getItem('username'),
+                await axios.post(`${chatId.value}/send-message`, {
+                message: messageContent.value,
+                username: localStorage.getItem('username'),
                 });
-                
-                this.messageContent = '';
-                this.getMessages();
+
+                messageContent.value = '';
+                getMessages();
                 document.getElementById('create-message').value = '';
             } catch (error) {
                 console.error("Error sending message: ", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
             }
-        },
-        
-        scrollToBottom() {
-            this.$refs.chatBody.scrollTop = this.$refs.chatBody.scrollHeight;
-        },
+        };
 
-        
-        logout() {
+        const scrollToBottom = () => {
+            var chatBody = document.querySelector('.chat-body');
+            chatBody.scrollTop = chatBody.scrollHeight;
+        };
+
+        const logout = () => {
             localStorage.removeItem('token');
             localStorage.removeItem('username');
-            
-            this.$router.push({ name: 'login' });
-            this.$swal({
+
+            router.push({ name: 'login' });
+            Swal.fire({
                 icon: 'success',
                 title: 'Success!',
                 text: 'You have been logged out!',
                 showConfirmButton: false,
                 timer: 2000,
             });
-            
+
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
-        },
+        };
 
-        formatMessageDate(date) {
+        const formatMessageDate = (date) => {
             return date
                 .split('T')[1]
                 .split('.')[0]
                 .split(':')
                 .slice(0, 2)
                 .join(':');
-        },
+        };
+
+        onMounted(() => {
+            if (!localStorage.getItem('token')) {
+                router.push({ name: 'login' });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'You must be logged in to access this page!',
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
+            }
+
+            makeSpin.value = true;
+
+            getMessages();
+
+            setInterval(() => {
+                makeSpin.value = false;
+            }, 1000);
+
+        });
+
+        return {
+            messages,
+            messageContent,
+            chatId,
+            getMessages,
+            sendMessage,
+            scrollToBottom,
+            logout,
+            formatMessageDate,
+        };
     }
 }
 </script> 
