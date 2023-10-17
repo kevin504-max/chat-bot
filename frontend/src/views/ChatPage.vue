@@ -26,7 +26,7 @@
         <div class="chat-footer">
             <form @submit.prevent="sendMessage">
                 <input v-model="messageContent" id="create-message" placeholder="Write a message..." />
-                <input type="submit" />
+                <input type="submit" value="Send message" />
             </form>
         </div>
         <div class="logout-button">
