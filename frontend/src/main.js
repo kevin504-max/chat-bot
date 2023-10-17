@@ -17,6 +17,6 @@ app.config.productionTip = false
 app.use(router)
 app.use(VueSweetalert2)
 
-axios.defaults.baseURL = 'http://localhost:3300/api'
+axios.defaults.baseURL = 'https://backbot-lrgy.onrender.com/api'
 
 app.mount('#app')
