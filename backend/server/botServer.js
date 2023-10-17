@@ -46,11 +46,7 @@ class BotServer {
 
         // Listen to the /info command
         bot.command('info', (ctx) => {
-            const message = `
-                - I was developed using Node.js and Vue.js.
-                - I use MongoDB as my database.
-                - I'm available online at https://chat-bot-wheat-two.vercel.app/chat.
-            `;
+            const message = `\n- I was developed using Node.js and Vue.js.\n- I use MongoDB as my database.\n- I'm available online at https://chat-bot-wheat-two.vercel.app/chat.`;
 
             this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
             ctx.reply(message, ctx.message.from.first_name);
@@ -59,19 +55,7 @@ class BotServer {
         // Listen to the /help command
         bot.command('help', (ctx) => {
             const message = `
-                Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖
-
-                Here are some of the commands you can use:
-                
-                - /weather <city> - I'll provide you with the weather for the city you choose.
-                - /news - I'll keep you updated with the top 5 news of the day from news.api.org.
-                - /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.
-                - /joke - I enjoy making people laugh! I'll tell you a joke.
-                - /search <anything> - I can search the web for anything you want. Just tell me what to look for.
-                - /start - A friendly greeting! We start here. 😊
-                - /info - I'll provide some extra information about myself.
-                
-                Feel free to try any of these commands, and I'm here to answer your questions and help with anything you need!
+                Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖\nHere are some of the commands you can use:\n- /weather <city> - I'll provide you with the weather for the city you choose.\n- /news - I'll keep you updated with the top 5 news of the day from news.api.org.\n- /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.\n- /joke - I enjoy making people laugh! I'll tell you a joke.\n- /search <anything> - I can search the web for anything you want. Just tell me what to look for.\n- /start - A friendly greeting! We start here. 😊\n- /info - I'll provide some extra information about myself.\nFeel free to try any of these commands, and I'm here to answer your questions and help with anything you need!
             `;
             
             this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
