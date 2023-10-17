@@ -63,16 +63,19 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import axios from "axios";
 import { useRouter} from "vue-router";
 import Swal from "sweetalert2";
 
 export default {
+  name: "AuthPage",
+  inject: ['makeSpin'],
   setup() {
     const email = ref("");
     const password = ref("");
     const router = useRouter();
+    let makeSpin = inject('makeSpin');
 
     if (localStorage.getItem("token")) {
       router.push({ name: "chat" });
@@ -91,6 +94,8 @@ export default {
         password: password.value,
       };
 
+      makeSpin.value = true;
+
       axios
         .post("login", payload, {
           headers: {
@@ -101,6 +106,8 @@ export default {
         .then((response) => {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("username", response.data.username);
+
+          makeSpin.value = false;
 
           Swal.fire({
             icon: "success",
