@@ -134,7 +134,6 @@ class BotServer {
                 ];
 
                 const randomIndex = Math.floor(Math.random() * possibleMessages.length);
-                console.log(randomIndex);
                 const message = possibleMessages[randomIndex];
 
                 this.saveBotMessages(message, username, ctx.message.chat.id);
