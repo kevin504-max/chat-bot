@@ -23,10 +23,28 @@ module.exports = class BotService {
                 replyMessage = `Welcome ${username}!`;
                 bot.telegram.sendMessage(chatId, replyMessage);
             } else if (message === '/help') {
-                replyMessage = 'Help message here!';
+                replyMessage = `
+                    Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖
+
+                    Here are some of the commands you can use:
+                    
+                    - /weather <city> - I'll provide you with the weather for the city you choose.
+                    - /news - I'll keep you updated with the top 5 news of the day from news.api.org.
+                    - /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.
+                    - /joke - I enjoy making people laugh! I'll tell you a joke.
+                    - /search <anything> - I can search the web for anything you want. Just tell me what to look for.
+                    - /start - A friendly greeting! We start here. 😊
+                    - /info - I'll provide some extra information about myself.
+                    
+                    Feel free to try any of these commands, and I'm here to answer your questions and help with anything you need!
+                `;
                 bot.telegram.sendMessage(chatId, replyMessage);
             } else if (message === '/info') {
-                replyMessage = 'Info message here!';
+                replyMessage = `
+                    - I was developed using Node.js and Vue.js.
+                    - I use MongoDB as my database.
+                    - I'm available online at https://chat-bot-wheat-two.vercel.app/chat.
+                `;
                 bot.telegram.sendMessage(chatId, replyMessage);
             } else if (message.indexOf('/weather') > -1) {
                 const cityName = message.replace('/weather', '').trim();
