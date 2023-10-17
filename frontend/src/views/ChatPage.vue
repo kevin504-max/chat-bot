@@ -281,4 +281,31 @@ input:not(#create-message):hover {
     margin-bottom: 1rem;
     opacity: 0.8;
 }
+
+@media screen and (max-width: 768px) {
+    #chat-container {
+        width: 90%;
+    }
+
+    .chat-body {
+        height: 80%;
+    }
+
+    .chat-footer {
+        margin-bottom: 1em;
+    }
+
+    .chat-footer form {
+        width: 100%;
+    }
+
+    .logout-button {
+        margin-top: 0.5em;
+        margin-right: 0.5em;
+    }
+
+    .logout-button button {
+        padding: 0.5rem;
+    }
+}
 </style>
