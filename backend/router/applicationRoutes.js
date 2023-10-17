@@ -10,6 +10,7 @@ router.post('/login', (request, response) => userController.loginUser(request, r
 router.get('/users', (request, response) => userController.getUsers(request, response));
 router.get('/users/:id', (request, response) => userController.findUser(request, response));
 router.get('/users/:username/messages', (request, response) => userController.getUserMessages(request, response));
+router.delete('/users/:id', (request, response) => userController.destroyUser(request, response));
 
 router.post('/:chatId/send-message', (request, response) => messageController.sendMessage(request, response));
 

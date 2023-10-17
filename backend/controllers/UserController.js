@@ -8,7 +8,13 @@ module.exports = class UserController {
 
             const result = await userService.registerUser({ username, email, password, confirmPassword });
 
-            return response.status(result.status).json({ message: result.message, token: result.token, username: result.username });
+            return response.status(result.status).json({ 
+                status: result.status,
+                message: result.message,
+                token: result.token,
+                username: result.username, 
+                userId: result.userId
+            });
         } catch (error) {
             console.error('UserController::registerUser ', error);
             response.status(500).json({ message: 'Something went wrong! Try again.' });
@@ -74,6 +80,17 @@ module.exports = class UserController {
             return response.status(200).json({ userMessages: messages });
         } catch (error) {
             console.error('UserController::getUserMessages ', error);
+            response.status(500).json({ message: 'Something went wrong! Try again.' });
+        }
+    }
+
+    destroyUser = async (request, response) => {
+        try {
+            const result = await userService.destroyUser(request.params.id);
+
+            return response.status(result.status).json({ message: result.message });
+        } catch (error) {
+            console.error('UserController::destroyUser ', error);
             response.status(500).json({ message: 'Something went wrong! Try again.' });
         }
     }

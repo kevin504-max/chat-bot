@@ -50,7 +50,13 @@ module.exports = class UserService {
             const secret = process.env.JWT_SECRET;
             const token = jwt.sign({ id: newUser._id }, secret);
 
-            return { status: 201, message: "User created successfully!", token: token, username: newUser.username };            
+            return { 
+                status: 201,
+                message: "User created successfully!",
+                token: token, 
+                username: newUser.username, 
+                userId: newUser._id
+            };            
         } catch (error) {
             console.error('UserService::registerUser ', error);
             throw `Error ${error}`;
@@ -84,7 +90,13 @@ module.exports = class UserService {
             const secret = process.env.JWT_SECRET;
             const token = jwt.sign({ id: user._id }, secret);
 
-            return { status: 200, message: "User logged in successfully!", token: token, username: user.username };            
+            return { 
+                status: 200,
+                message: "User logged in successfully!",
+                token: token,
+                username: user.username,
+                userId: user._id                
+            };            
         } catch (error) {
             console.error('UserService::loginUser ', error);
             throw `Error ${error}`;
@@ -132,4 +144,21 @@ module.exports = class UserService {
             throw `Error ${error}`;
         }
     }
+
+    destroyUser = async (userId) => {
+        try {
+            const user = this.findUser(userId);
+
+            if (! user) {
+                return { status: 404, message: "User not found!" };
+            }
+
+            await User.deleteOne({ _id: userId });
+
+            return { status: 200, message: "User deleted successfully!" };
+        } catch (error) {
+            console.error('UserService::destroyUser ', error);
+            throw `Error ${error}`;
+        }
+    } 
 }
