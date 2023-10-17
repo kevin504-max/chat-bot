@@ -70,7 +70,6 @@ import Swal from "sweetalert2";
 
 export default {
   name: "AuthPage",
-  inject: ['makeSpin'],
   setup() {
     const email = ref("");
     const password = ref("");
