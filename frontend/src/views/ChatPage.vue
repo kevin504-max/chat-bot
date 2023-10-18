@@ -76,20 +76,9 @@ export default {
         };
 
         const formatMessages = () => {
-            messages.forEach((message) => {
-                if (message.message.includes('\n')) {
-                    const splitMessage = message.message.split('\n');
-
-                    splitMessage.forEach((message) => {
-                        messages.value.push({
-                            message: message,
-                            username: message.username,
-                            date: message.date,
-                            chatId: message.chatId,
-                        });
-                    });
-
-                    messages.value.splice(messages.value.indexOf(message), 1);
+            messages.each((message) => {
+                if (message.username === 'Bot') {
+                    message.message = message.message.replace(/(?:\r\n|\r|\n)/g, '<br>');
                 }
             });
         };
