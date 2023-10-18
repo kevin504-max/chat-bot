@@ -8,10 +8,10 @@ module.exports = class BotService {
                 return `Very welcome ${username}!`;
             },
             '/help': () => {
-                return `Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖<br><br>Here are some of the commands you can use:<br><br>- /weather <city> - I'll provide you with the weather for the city you choose.<br><br>- /news - I'll keep you updated with the top 5 news of the day from news.api.org.<br><br>- /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.<br><br>- /joke - I enjoy making people laugh! I'll tell you a joke.<br><br>- /search <anything> - I can search the web for anything you want. Just tell me what to look for.<br><br>- /start - A friendly greeting! We start here. 😊<br><br>- /info - I'll provide some extra information about myself.<br><br>Feel free to try any of these commands, and I'm here to answer your questions and help with anything you need!`;
+                return `Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖\n\nHere are some of the commands you can use:\n\n- /weather <city> - I'll provide you with the weather for the city you choose.\n\n- /news - I'll keep you updated with the top 5 news of the day from news.api.org.\n\n- /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.\n\n- /joke - I enjoy making people laugh! I'll tell you a joke.\n\n- /search <anything> - I can search the web for anything you want. Just tell me what to look for.\n\n- /start - A friendly greeting! We start here. 😊\n\n- /info - I'll provide some extra information about myself.\n\nFeel free to try any of these commands, and I'm here to answer your questions and help with anything you need!`;
             },
             '/info': () => {
-                return `- I was developed using Node.js and Vue.js.<br><br>- I use MongoDB as my database.<br><br>- I'm available online at https://chat-bot-wheat-two.vercel.app/chat.`;
+                return `- I was developed using Node.js and Vue.js.\n\n- I use MongoDB as my database.\n\n- I'm available online at https://chat-bot-wheat-two.vercel.app/chat.`;
             },
             '/weather': async (args) => {
                 if (args.length > 0) {
