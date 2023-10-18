@@ -59,6 +59,9 @@ export default {
                 chatId.value = messages.value[0].chatId;
 
                 await nextTick();
+                formatMessages();
+
+                await nextTick();
                 scrollToBottom();
             } catch (error) {
                 console.error("Error getting messages: ", error);
@@ -70,6 +73,25 @@ export default {
                     timer: 2000,
                 });
             }
+        };
+
+        const formatMessages = () => {
+            messages.value.forEach((message) => {
+                if (message.message.includes('\n')) {
+                    const splitMessage = message.message.split('\n');
+
+                    splitMessage.forEach((message) => {
+                        messages.value.push({
+                            message: message,
+                            username: message.username,
+                            date: message.date,
+                            chatId: message.chatId,
+                        });
+                    });
+
+                    messages.value.splice(messages.value.indexOf(message), 1);
+                }
+            });
         };
 
         const sendMessage = async () => {
@@ -153,6 +175,7 @@ export default {
             messageContent,
             chatId,
             getMessages,
+            formatMessages,
             sendMessage,
             scrollToBottom,
             logout,
