@@ -8,7 +8,7 @@ module.exports = class UserController {
 
             const result = await userService.registerUser({ username, email, password, confirmPassword });
 
-            return response.status(result.status).json({ 
+            return response.json({ 
                 status: result.status,
                 message: result.message,
                 token: result.token,
@@ -24,9 +24,9 @@ module.exports = class UserController {
     loginUser = async (request, response) => {
         try {
             const { email, password } = request.body;
-            const result = await userService.loginUser({ email, password });
+            const { status, message, token, username} = await userService.loginUser({ email, password });
     
-            return response.status(result.status).json({ message: result.message, token: result.token, username: result.username });
+            return response.json({ status: status, message: message, token: token, username: username });
         } catch (error) {
             console.error('UserController::loginUser ', error);
             response.status(500).json({ message: 'Something went wrong! Try again.' });
@@ -86,9 +86,9 @@ module.exports = class UserController {
 
     destroyUser = async (request, response) => {
         try {
-            const result = await userService.destroyUser(request.params.id);
+            const { status, message } = await userService.destroyUser(request.params.id);
 
-            return response.status(result.status).json({ message: result.message });
+            return response.status(status).json({ message: message });
         } catch (error) {
             console.error('UserController::destroyUser ', error);
             response.status(500).json({ message: 'Something went wrong! Try again.' });
