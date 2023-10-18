@@ -58,13 +58,6 @@ export default {
 
                 chatId.value = messages.value[0].chatId;
 
-                // format messages if they are from the bot
-                messages.value.forEach((message) => {
-                    if (message.username === 'Bot') {
-                        message.message = message.message.replace(/\\n/g, '<br />');
-                    }
-                });
-
                 await nextTick();
                 scrollToBottom();
             } catch (error) {
