@@ -90,13 +90,7 @@ module.exports = class UserService {
             const secret = process.env.JWT_SECRET;
             const token = jwt.sign({ id: user._id }, secret);
 
-            return { 
-                status: 200,
-                message: "User logged in successfully!",
-                token: token,
-                username: user.username,
-                userId: user._id                
-            };            
+            return { status: 200, message: "User logged in successfully!", token: token, username: user.username };            
         } catch (error) {
             console.error('UserService::loginUser ', error);
             throw `Error ${error}`;
@@ -129,6 +123,7 @@ module.exports = class UserService {
             // Sort the messages by date
             userMessages.sort((a, b) => a.date - b.date);
 
+            // If no messages are found, return a default message
             if (! userMessages || userMessages.length === 0) {
                 const defaultMessage = {
                     username: 'Bot',
