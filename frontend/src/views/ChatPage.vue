@@ -44,7 +44,7 @@ import Swal from "sweetalert2";
 export default {
     name: "ChatPage",
     setup() {
-        const messages = ref([]);
+        let messages = ref([]);
         const messageContent = ref('');
         const chatId = ref('');
         const router = useRouter();
