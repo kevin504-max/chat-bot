@@ -76,7 +76,7 @@ export default {
         };
 
         const formatMessages = () => {
-            messages.value.forEach((message) => {
+            messages.forEach((message) => {
                 if (message.message.includes('\n')) {
                     const splitMessage = message.message.split('\n');
 
