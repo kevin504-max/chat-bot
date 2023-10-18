@@ -106,14 +106,10 @@ module.exports = class BotService {
                 return 'There was an error retrieving the news!';
             }
 
-            let message = `
-                Here are the top 5 news headlines:
-            `;
+            let message = `Here are the top 5 news headlines:\n\n`;
 
             for (let i = 0; i < 5; i++) {
-                message += `
-                    ${i + 1} - ${response.data.articles[i].title}
-                `;
+                message += `${i + 1} - ${response.data.articles[i].title}\n\n${response.data.articles[i].description}\n\nRead more at ${response.data.articles[i].url}\n\n`;
             }
     
             return message;
