@@ -26,9 +26,10 @@ Before you begin, ensure you have the following tools installed:
 
 ## 🏡 Getting Started Locally
 
-1. Clone this repository
+1. Clone this repository and enter "locally-test" branch
 ```bash
   git clone https://github.com/kevin504-max/chat-bot.git
+  git checkout locally-test
 ```
 
 2. Configure your database on [MongoDB Atlas](https://account.mongodb.com/), login with your account and get your database credentials.
