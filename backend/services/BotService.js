@@ -3,8 +3,53 @@ const Telegraf = require('telegraf');
 const axios = require('axios');
 module.exports = class BotService {
     buildBotMessage = async (message, chatId, username) => {
+        const commandMap = {
+            '/start': (args, username) => {
+                return `Very welcome ${username}!`;
+            },
+            '/help': () => {
+                return `Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖\n\nHere are some of the commands you can use:\n\n- /weather <city> - I'll provide you with the weather for the city you choose.\n\n- /news - I'll keep you updated with the top 5 news of the day from news.api.org.\n\n- /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.\n\n- /joke - I enjoy making people laugh! I'll tell you a joke.\n\n- /search <anything> - I can search the web for anything you want. Just tell me what to look for.\n\n- /start - A friendly greeting! We start here. 😊\n\n- /info - I'll provide some extra information about myself.\n\nFeel free to try any of these commands, and I'm here to answer your questions and help with anything you need!`;
+            },
+            '/info': () => {
+                return `- I was developed using Node.js and Vue.js.\n\n- I use MongoDB as my database.\n\n- I'm available online at https://chat-bot-wheat-two.vercel.app/chat.`;
+            },
+            '/weather': async (args) => {
+                if (args.length > 0) {
+                    const cityName = args.join(' ');
+                    return await this.getWeather(cityName);
+                } else {
+                    return 'Please provide a city name for the weather command.';
+                }
+            },
+            '/news': async () => {
+                return await this.getNews();
+            },
+            '/currency': async (args) => {
+                if (args.length >= 3) {
+                    const currencyFrom = args[0];
+                    const currencyTo = args[1];
+                    const amount = args[2];
+                    return await this.currencyConverter(currencyFrom, currencyTo, amount);
+                } else {
+                    return 'Please provide the source currency, target currency, and amount for the currency command.';
+                }
+            },
+            '/search': async (args) => {
+                if (args.length > 0) {
+                    const searchTerm = args.join(' ');
+                    return await this.searchOnWeb(searchTerm);
+                } else {
+                    return 'Please provide a search term for the search command.';
+                }
+            },
+            '/joke': async () => {
+                return await this.getJoke();
+            },
+        };
+
         try {
             const bot = new Telegraf(env.botToken);
+            let replyMessage = '';
             const possibleMessages = [
                 'Sorry, I did not understand that!',
                 'Sorry, could you repeat that?',
@@ -15,22 +60,15 @@ module.exports = class BotService {
                 'You can choose from the following predefined commands.',
             ];
             
-            // Map commands to the functions
-            const commandMap = {
-                ping: 'pong',
-                '/start': `Very welcome ${username}!`,
-                '/help':`Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖\n\nHere are some of the commands you can use:\n\n- /weather <city> - I'll provide you with the weather for the city you choose.\n\n- /news - I'll keep you updated with the top 5 news of the day from news.api.org.\n\n- /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.\n\n- /joke - I enjoy making people laugh! I'll tell you a joke.\n\n- /search <anything> - I can search the web for anything you want. Just tell me what to look for.\n\n- /start - A friendly greeting! We start here. 😊\n\n- /info - I'll provide some extra information about myself.\n\nFeel free to try any of these commands, and I'm here to answer your questions and help with anything you need!`,
-                '/info': `\n\n- I was developed using Node.js and Vue.js.\n\n- I use MongoDB as my database.\n\n- I'm available online at https://chat-bot-wheat-two.vercel.app/chat.`,
-                '/weather': (message) => this.getWeatherCommand(message),
-                '/news': await this.getNews(),
-                '/currency': (message) => this.getCurrencyCommand(message),
-                '/search': (message) => this.searchOnWebCommand(message),
-                '/joke': await this.getJoke()
-            };
+            const command = message.split(' ')[0]; // Take the first token of the message
+            const args = message.split(' ').slice(1); // Take the arguments after the command
 
-            // Execute the corresponding function for the command or return a random default message
-            const replyMessage = commandMap[message] ? commandMap[message] : `${possibleMessages[Math.floor(Math.random() * possibleMessages.length)]}\n\n- Type /help to see the available commands.`;
-
+            if (commandMap.hasOwnProperty(command)) {
+                replyMessage = await commandMap[command](args, username);
+            } else {
+                replyMessage = `${possibleMessages[Math.floor(Math.random() * possibleMessages.length)]}\n\n- Type /help to see the available commands.`;
+            }
+                
             // Send the message
             bot.telegram.sendMessage(chatId, replyMessage);
 
@@ -58,11 +96,6 @@ module.exports = class BotService {
             console.error('BotService::getWeather ', error);
             return `There was an error retrieving the weather for "${cityName}"!`;
         }
-    }
-
-    getWeatherCommand = async (message) => {
-        const cityName = message.replace('/weather', '').trim();
-        return await this.getWeather(cityName);
     }
 
     getNews = async () => {
@@ -118,11 +151,6 @@ module.exports = class BotService {
         }
     }
 
-    getCurrencyCommand = async (message) => {
-        const [currencyFrom, currencyTo, amount] = message.replace('/currency', '').trim().split(' ');
-        return await this.currencyConverter(currencyFrom, currencyTo, amount);
-    }
-
     validateCurrencyInput = (currencyFrom, currencyTo, amount) => {        
         if (currencyFrom === currencyTo) {
             return 'The currencies must be different!';
@@ -160,11 +188,6 @@ module.exports = class BotService {
             console.error('BotService::searchOnWeb ', error);
             return `There was an error searching on the web!`;
         }
-    }
-
-    getSearchOnWebCommand = async (message) => {
-        const searchTerm = message.replace('/search', '').trim();
-        return await this.searchOnWeb(searchTerm);
     }
 
     getJoke = async () => {
