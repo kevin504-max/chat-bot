@@ -21,10 +21,10 @@ module.exports = class BotService {
                 '/start': `Very welcome ${username}!`,
                 '/help':`Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖\n\nHere are some of the commands you can use:\n\n- /weather <city> - I'll provide you with the weather for the city you choose.\n\n- /news - I'll keep you updated with the top 5 news of the day from news.api.org.\n\n- /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.\n\n- /joke - I enjoy making people laugh! I'll tell you a joke.\n\n- /search <anything> - I can search the web for anything you want. Just tell me what to look for.\n\n- /start - A friendly greeting! We start here. 😊\n\n- /info - I'll provide some extra information about myself.\n\nFeel free to try any of these commands, and I'm here to answer your questions and help with anything you need!`,
                 '/info': `\n\n- I was developed using Node.js and Vue.js.\n\n- I use MongoDB as my database.\n\n- I'm available online at https://chat-bot-wheat-two.vercel.app/chat.`,
-                '/weather': await this.getWeather(message.replace('/weather', '').trim()),
+                '/weather': (message) => this.getWeatherCommand(message),
                 '/news': await this.getNews(),
-                '/currency': await this.currencyConverter(message.split(' ')[1], message.split(' ')[2], message.split(' ')[3]),
-                '/search': await this.searchOnWeb(message.replace('/search', '').trim()),
+                '/currency': (message) => this.getCurrencyCommand(message),
+                '/search': (message) => this.searchOnWebCommand(message),
                 '/joke': await this.getJoke()
             };
 
@@ -58,6 +58,11 @@ module.exports = class BotService {
             console.error('BotService::getWeather ', error);
             return `There was an error retrieving the weather for "${cityName}"!`;
         }
+    }
+
+    getWeatherCommand = async (message) => {
+        const cityName = message.replace('/weather', '').trim();
+        return await this.getWeather(cityName);
     }
 
     getNews = async () => {
@@ -113,6 +118,11 @@ module.exports = class BotService {
         }
     }
 
+    getCurrencyCommand = async (message) => {
+        const [currencyFrom, currencyTo, amount] = message.replace('/currency', '').trim().split(' ');
+        return await this.currencyConverter(currencyFrom, currencyTo, amount);
+    }
+
     validateCurrencyInput = (currencyFrom, currencyTo, amount) => {        
         if (currencyFrom === currencyTo) {
             return 'The currencies must be different!';
@@ -150,6 +160,11 @@ module.exports = class BotService {
             console.error('BotService::searchOnWeb ', error);
             return `There was an error searching on the web!`;
         }
+    }
+
+    getSearchOnWebCommand = async (message) => {
+        const searchTerm = message.replace('/search', '').trim();
+        return await this.searchOnWeb(searchTerm);
     }
 
     getJoke = async () => {
