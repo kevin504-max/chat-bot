@@ -94,17 +94,27 @@ Commands supported by the bot
 ### ⚠️ Another input messages
 The bot have an array with possible messages for that case so, you don't gonna receive a message coherent with your input message (yet).
 
+### 🧬 Project Structure
+This project FlashBot Fullstack API is organized in two distincts masses: `frontend` and `backend`.
+Each of these play a key role in the overall functionality and architecture of the application.
+
+## 🔙 Backend
+The backend is responsible for the configuration and central logic of the project that keep the Telegram bot running. Furthermore, the backend is responsible for the database connection and the API endpoints that are used by the frontend.
+
+## 👩‍💻 Frontend
+The frontend handles the user interface and the user experience of the application. It is responsible for the visual elements and the overall design of the application. The frontend is also responsible for the user authentication and the API calls to the backend.
+
 ## 🧪 Automated Tests
-The systems can make automated tests, in locally for example, after start the application with `npm run start`
-You can be able to execute the following command, and follow the process
+The systems is able to make automated tests, in locally and and main branch. In locally, you have to start the application with `npm run start` first.
+Then you are able to execute the following command, and follow the process (if you are in the main branch, just execute the command)
 ```bash
   npm test
 ```
 
 ## 🚀 Getting Started >>Online<<
-If you get in here following all the steps you're able to use the application in an online server.
-All you have to do is, click in this [link](https://chat-bot-wheat-two.vercel.app/). 
-Make your authentication normally, and talk with your bot in the external interface web you gonna see the messages in Telegram too.
+The application is acessible online in by clicking [here](https://chat-bot-wheat-two.vercel.app/chat). 
+But how i make a deploy of my code, the bot that is running is the bot that i use to test the application,
+but don't worry, you still can interact with the bot! All you need to do is start the bot in the Telegram chat, you go to there clicking [here](https://t.me/FullstackAPIBot).
 
 ### 🎥 Presentation Video
 I understand that is it a lot of complicated steps, so for security i gonna show the application working and running for you!

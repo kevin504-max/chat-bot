@@ -5,7 +5,6 @@ module.exports = class BotService {
     buildBotMessage = async (message, chatId, username) => {
         try {
             const bot = new Telegraf(env.botToken);
-            let replyMessage = "Default Message Here!";
             const possibleMessages = [
                 'Sorry, I did not understand that!',
                 'Sorry, could you repeat that?',
@@ -16,62 +15,24 @@ module.exports = class BotService {
                 'You can choose from the following predefined commands.',
             ];
             
-            if (message === 'ping') {
-                replyMessage = 'pong';
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else if (message === '/start') {
-                replyMessage = `Welcome ${username}!`;
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else if (message === '/help') {
-                replyMessage = `
-                    Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖
+            // Map commands to the functions
+            const commandMap = {
+                ping: 'pong',
+                '/start': `Very welcome ${username}!`,
+                '/help':`Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖\n\nHere are some of the commands you can use:\n\n- /weather <city> - I'll provide you with the weather for the city you choose.\n\n- /news - I'll keep you updated with the top 5 news of the day from news.api.org.\n\n- /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.\n\n- /joke - I enjoy making people laugh! I'll tell you a joke.\n\n- /search <anything> - I can search the web for anything you want. Just tell me what to look for.\n\n- /start - A friendly greeting! We start here. 😊\n\n- /info - I'll provide some extra information about myself.\n\nFeel free to try any of these commands, and I'm here to answer your questions and help with anything you need!`,
+                '/info': `\n\n- I was developed using Node.js and Vue.js.\n\n- I use MongoDB as my database.\n\n- I'm available online at https://chat-bot-wheat-two.vercel.app/chat.`,
+                '/weather': await this.getWeather(message.replace('/weather', '').trim()),
+                '/news': await this.getNews(),
+                '/currency': await this.currencyConverter(message.split(' ')[1], message.split(' ')[2], message.split(' ')[3]),
+                '/search': await this.searchOnWeb(message.replace('/search', '').trim()),
+                '/joke': await this.getJoke()
+            };
 
-                    Here are some of the commands you can use:
-                    
-                    - /weather <city> - I'll provide you with the weather for the city you choose.
-                    - /news - I'll keep you updated with the top 5 news of the day from news.api.org.
-                    - /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.
-                    - /joke - I enjoy making people laugh! I'll tell you a joke.
-                    - /search <anything> - I can search the web for anything you want. Just tell me what to look for.
-                    - /start - A friendly greeting! We start here. 😊
-                    - /info - I'll provide some extra information about myself.
-                    
-                    Feel free to try any of these commands, and I'm here to answer your questions and help with anything you need!
-                `;
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else if (message === '/info') {
-                replyMessage = `
-                    - I was developed using Node.js and Vue.js.
-                    - I use MongoDB as my database.
-                    - I'm available online at https://chat-bot-wheat-two.vercel.app/chat.
-                `;
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else if (message.indexOf('/weather') > -1) {
-                const cityName = message.replace('/weather', '').trim();
-                replyMessage = await this.getWeather(cityName);
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else if (message.indexOf('/news') > -1) {
-                replyMessage = await this.getNews();
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else if (message.indexOf('/currency') > -1) {
-                const currencyFrom = message.split(' ')[1];
-                const currencyTo = message.split(' ')[2];
-                const amount = message.split(' ')[3];
-                replyMessage = await this.currencyConverter(currencyFrom, currencyTo, amount);
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else if (message.indexOf('/search') > -1) {
-                const searchTerm = message.replace('/search', '').trim();
-                replyMessage = await this.searchOnWeb(searchTerm);
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else if (message.indexOf('/joke') > -1) {
-                replyMessage = await this.getJoke();
-                bot.telegram.sendMessage(chatId, replyMessage);
-            } else {
-                const randomIndex = Math.floor(Math.random() * possibleMessages.length);
-                replyMessage = `${possibleMessages[randomIndex]}
-                - Type /help to see the available commands.`;
-                bot.telegram.sendMessage(chatId, replyMessage);
-            }
+            // Execute the corresponding function for the command or return a random default message
+            const replyMessage = commandMap[message] ? commandMap[message] : `${possibleMessages[Math.floor(Math.random() * possibleMessages.length)]}\n\n- Type /help to see the available commands.`;
+
+            // Send the message
+            bot.telegram.sendMessage(chatId, replyMessage);
 
             return replyMessage;
         } catch (error) {
