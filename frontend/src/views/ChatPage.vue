@@ -44,7 +44,7 @@ import Swal from "sweetalert2";
 export default {
     name: "ChatPage",
     setup() {
-        let messages = ref([]);
+        const messages = ref([]);
         const messageContent = ref('');
         const chatId = ref('');
         const router = useRouter();
@@ -58,8 +58,12 @@ export default {
 
                 chatId.value = messages.value[0].chatId;
 
-                await nextTick();
-                formatMessages();
+                // format messages if they are from the bot
+                messages.value.forEach((message) => {
+                    if (message.username === 'Bot') {
+                        message.message = message.message.replace(/\\n/g, '<br />');
+                    }
+                });
 
                 await nextTick();
                 scrollToBottom();
@@ -73,14 +77,6 @@ export default {
                     timer: 2000,
                 });
             }
-        };
-
-        const formatMessages = () => {
-            messages.each((message) => {
-                if (message.username === 'Bot') {
-                    message.message = message.message.replace(/(?:\r\n|\r|\n)/g, '<br>');
-                }
-            });
         };
 
         const sendMessage = async () => {
@@ -164,7 +160,6 @@ export default {
             messageContent,
             chatId,
             getMessages,
-            formatMessages,
             sendMessage,
             scrollToBottom,
             logout,
