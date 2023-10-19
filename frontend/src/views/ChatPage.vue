@@ -97,6 +97,10 @@ export default {
                             });
                         }
                     }
+
+                    // Align the bot messages to the left
+                    message.message = `<div style="text-align: left">${message.message}</div>`;
+
                 }
             });
         };
