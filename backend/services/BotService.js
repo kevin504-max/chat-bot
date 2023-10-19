@@ -36,7 +36,7 @@ module.exports = class BotService {
             },
             '/search': async (args) => {
                 if (args.length > 0) {
-                    const searchTerm = args.join(' ');
+                    const searchTerm = args.join('+');
                     return await this.searchOnWeb(searchTerm);
                 } else {
                     return 'Please provide a search term for the search command.';
