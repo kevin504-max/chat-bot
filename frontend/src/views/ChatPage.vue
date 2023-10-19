@@ -16,9 +16,11 @@
                 
                 <div class="message-row bot" v-else>
                     <div class="message bot">
-                        <p>
-                            <i class="fa fa-robot"></i> {{ message.message }}
+                        <p v-html="message.message">
                         </p>
+                        <!-- <p>
+                            <i class="fa fa-robot"></i> {{ message.message }}
+                        </p> -->
                     </div>
                 </div>
             </div>
@@ -56,6 +58,8 @@ export default {
 
                 messages.value = response.data.userMessages;
 
+                formatMessages();
+
                 chatId.value = messages.value[0].chatId;
 
                 await nextTick();
@@ -70,6 +74,31 @@ export default {
                     timer: 2000,
                 });
             }
+        };
+
+        const formatMessages = async () => {
+            messages.value.forEach((message) => {
+                if (message.username === 'Bot') {
+                    message.message = `<i class="fa fa-robot"></i> ${message.message}`;
+                    message.message = message.message.replace(/(?:\r\n|\r|\n)/g, '<br>');
+
+                    if (message.message.includes('http') && message.message.includes('Search')) {
+                        message.message = message.message.replace(/(http\S+)/g, '<a href="$1" target="_blank">$1</a>');
+                    } else if (message.message.includes('http') && message.message.includes('/news')) {
+                        // Find all URLs in the message
+                        const urlRegex = /(https?:\/\/[^\s]+)/g;
+                        const matches = message.message.match(urlRegex);
+
+                        if (matches && matches.length > 0) {
+                            matches.forEach((newsLink) => {
+                                // Replace the URL with a link tag
+                                const linkTag = `<a href="${newsLink}" target="_blank">${newsLink}</a>`;
+                                message.message = message.message.replace(newsLink, linkTag);
+                            });
+                        }
+                    }
+                }
+            });
         };
 
         const sendMessage = async () => {
@@ -153,6 +182,7 @@ export default {
             messageContent,
             chatId,
             getMessages,
+            formatMessages,
             sendMessage,
             scrollToBottom,
             logout,
