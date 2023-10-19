@@ -88,7 +88,7 @@ Commands supported by the bot
 * [/weather <city>](#) - Receive the weather city description
 * [/news](#) - Receive the top 5 news of the day ([font](https://newsapi.org/))
 * [/currency <CurrencyA> <CurrecyB> <Amount>](#) - Convert the amount between the currencies
-* [/search <word>](#) - Gonna receive a link with the word search in google
+* [/search <anything>](#) - Gonna receive a link with the corresponding search in Google
 * [/joke](#) - Receive a hilarious bot joke 🤡
 
 ## ⚠️ Another input messages
