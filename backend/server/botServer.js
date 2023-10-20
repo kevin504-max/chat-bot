@@ -22,7 +22,7 @@ class BotServer {
             if (ctx.message.from) {
                 // Save the user message
                 const userMessage = new Message({
-                    username: ctx.message.from.first_name,
+                    username: ctx.message.from.username,
                     message: messageText,
                     date: new Date(),
                     sendTo: 'Bot',
@@ -38,9 +38,9 @@ class BotServer {
 
         // Listen to the /start command
         bot.command('start', (ctx) => {
-            const message = `Very welcome ${ctx.message.from.first_name}!`;
+            const message = `Very welcome ${ctx.message.from.username}!`;
             
-            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);            
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);            
             ctx.reply(message);
         });
 
@@ -48,8 +48,8 @@ class BotServer {
         bot.command('info', (ctx) => {
             const message = `\n\n- I was developed using Node.js and Vue.js.\n\n- I use MongoDB as my database.\n\n- I'm available online at https://chat-bot-wheat-two.vercel.app/chat.`;
 
-            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
-            ctx.reply(message, ctx.message.from.first_name);
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
+            ctx.reply(message, ctx.message.from.username);
         });
 
         // Listen to the /help command
@@ -58,7 +58,7 @@ class BotServer {
                 Hello! 👋 I'm FlashBot, and I'm here to assist you! 🤖\n\nHere are some of the commands you can use:\n\n- /weather <city> - I'll provide you with the weather for the city you choose.\n\n- /news - I'll keep you updated with the top 5 news of the day from news.api.org.\n\n- /currency <CurrencyA> <CurrencyB> <AMOUNT> - I can convert currencies for you! For example, /currency USD EUR 100.\n\n- /joke - I enjoy making people laugh! I'll tell you a joke.\n\n- /search <anything> - I can search the web for anything you want. Just tell me what to look for.\n\n- /start - A friendly greeting! We start here. 😊\n\n- /info - I'll provide some extra information about myself.\n\nFeel free to try any of these commands, and I'm here to answer your questions and help with anything you need!
             `;
             
-            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
             ctx.reply(message);
         });
 
@@ -66,7 +66,7 @@ class BotServer {
         bot.command('weather', async (ctx) => {
             const message = await botService.getWeather(ctx.message.text.replace('/weather ', ''));
             
-            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
             ctx.reply(message);
         });
 
@@ -74,7 +74,7 @@ class BotServer {
         bot.command('news', async (ctx) => {
             const message = await botService.getNews();
             
-            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
             ctx.reply(message);
         });
 
@@ -83,7 +83,7 @@ class BotServer {
             const inputMessage = ctx.message.text.replace('/currency ', '').split(' ');
             const message = await botService.currencyConverter(inputMessage[0], inputMessage[1], inputMessage[2]);
             
-            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
             ctx.reply(message);
         });
 
@@ -98,7 +98,7 @@ class BotServer {
 
             const message = await botService.searchOnWeb(searchTerm);
             
-            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
             ctx.reply(message);
         }); 
 
@@ -106,14 +106,14 @@ class BotServer {
         bot.command('joke', async (ctx) => {
             const message = await botService.getJoke();
 
-            this.saveBotMessages(message, ctx.message.from.first_name, ctx.message.chat.id);
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
             ctx.reply(message);
         });
 
         bot.on('message', async (ctx) => {
             try {
                 const chatId = ctx.message.chat.id;
-                const username = ctx.message.from.first_name;
+                const username = ctx.message.from.username;
 
                 if (ctx.message.text === 'ping') {
                     this.saveBotMessages('pong', username, chatId);
