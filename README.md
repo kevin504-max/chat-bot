@@ -6,6 +6,7 @@ With its efficient and user-friendly approach, the FlashBot provides valuable in
 
 Furthermore, it's important to note that the bot is fully integrated with Telegram and has an external interface 
 accessible by clicking on [here](https://chat-bot-wheat-two.vercel.app/chat). However, it is imperative that the bot is started within the Telegram application beforehand.
+Make sure, when you make the registration, that you are using the same username that you use in Telegram!
 
 ## 🛠 Technologies Used
 The project was built using the following technologies:
@@ -115,6 +116,7 @@ Then you are able to execute the following command, and follow the process (if y
 The application is acessible online by clicking [here](https://chat-bot-wheat-two.vercel.app/chat). 
 But how i make the deploy of my code, the bot that is running is the bot that i use to test the application,
 but don't worry, you still can interact with the bot! All you need to do is start the bot in the Telegram chat, you go to there clicking [here](https://t.me/FullstackAPIBot).
+Remember that you need to use the same username that you use in Telegram to register in the application.
 
 ## 🎥 Presentation Video
 I understand that is it a lot of complicated steps, so for security i gonna show the application working and running for you!
