@@ -84,7 +84,7 @@ export default {
 
                     if (message.message.includes('http') && message.message.includes('Search')) {
                         message.message = message.message.replace(/(http\S+)/g, '<a href="$1" target="_blank">$1</a>');
-                    } else if (message.message.includes('http') && message.message.includes('/news')) {
+                    } else if (message.message.includes('http') && message.message.includes('news')) {
                         // Find all URLs in the message
                         const urlRegex = /(https?:\/\/[^\s]+)/g;
                         const matches = message.message.match(urlRegex);
