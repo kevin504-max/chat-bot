@@ -103,19 +103,22 @@ export default {
           },
         })
         .then((response) => {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("username", response.data.username);
-
           makeSpin.value = false;
 
           Swal.fire({
-            icon: "success",
+            icon: (response.data.status === 200) ? "success" : 'error',
             title: "Success!",
             text: response.data.message,
             showConfirmButton: false,
             timer: 2000,
           });
-          router.push({ name: "chat" });
+          
+          if (response.data.status === 200) {
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("username", response.data.username);
+
+            router.push({ name: "chat" });
+          }
         })
         .catch((error) => {
           Swal.fire({
