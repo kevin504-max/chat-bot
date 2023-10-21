@@ -93,7 +93,7 @@ Commands supported by the bot
 * [/joke](#) - Receive a hilarious bot joke 🤡
 
 ## ⚠️ Another input messages
-The bot have an array with possible messages for that case so, you don't gonna receive a message coherent with your input message (yet).
+The bot have an array with possible messages for that case so, you will not receive a message coherent with your input message (yet).
 
 ## 🧬 Project Structure
 This project FlashBot Fullstack API is organized in two distincts masses: `frontend` and `backend`.
@@ -124,5 +124,5 @@ To access the short and instructive video click [here](https://www.youtube.com/w
 
 ## 🤝 Acknowledgment
 I extend my heartfelt appreciation to Flashvolve for this exciting and engaging technical challenge.
-This challenge has allowed me to showcase my skills and creativity in the realms of Vue.js and Node.js 
+It allowed me to showcase my skills and creativity in the realms of Vue.js and Node.js 
 while focusing on seamless integration with the Telegram API.
