@@ -1,5 +1,7 @@
 const env = require('../.env')
 const Telegraf = require('telegraf');
+const { Message } = require('../models/Message');
+
 const readline = require('readline');
 
 const bot = new Telegraf(env.botToken);
@@ -118,7 +120,7 @@ module.exports = class HashGameService {
         console.clear();
     }
 
-    showBoard = (state, robotChoice, userChoice, chatId) => {
+    showBoard = async (state, robotChoice, userChoice, chatId, username) => {
         let message = '';
 
         for (let i = 0; i < state.length; i++) {
@@ -140,17 +142,24 @@ module.exports = class HashGameService {
         message += '\n-----------------------------';
 
         bot.telegram.sendMessage(chatId, message);
+        await this.saveBotMessage(message, username, chatId);
     }
 
-    IATurn = async (robotChoice, userChoice, chatId) => {
+    IATurn = async (robotChoice, userChoice, chatId, username) => {
         const depth = await this.voidCells(board);
         const depthLength = Object.keys(depth).length;
 
         if (await this.endGame(board)) {
-            bot.telegram.sendMessage(chatId, 'YoGame Over!');
+            const message = 'Game Over!';
+
+            bot.telegram.sendMessage(chatId, message);
+            await this.saveBotMessage(message, username, chatId);
             return;
         } else if (depthLength === 0) {
-            bot.telegram.sendMessage(chatId, 'We Draw!');
+            const message = 'We Draw!';
+
+            bot.telegram.sendMessage(chatId, message);
+            await this.saveBotMessage(message, username, chatId);
             return;
         }
         
@@ -167,19 +176,29 @@ module.exports = class HashGameService {
             await this.makeMoviment(line, column, ROBOT);
         }
 
-        this.showBoard(board, robotChoice, userChoice, chatId);
-        bot.telegram.sendMessage(chatId, `Your turn [${userChoice}]\nUse number (1-9): `);
+        await this.showBoard(board, robotChoice, userChoice, chatId, username);
+        
+        const message = `Your turn [${userChoice}]\nUse number (1-9): `;
+        
+        bot.telegram.sendMessage(chatId, message);
+        await this.saveBotMessage(message, username, chatId);
     }
 
-    UserTurn = async (robotChoice, userChoice, chatId, input) => {
+    UserTurn = async (robotChoice, userChoice, chatId, input, username) => {
         const depth = await this.voidCells(board);
         const depthLength = Object.keys(depth).length;
 
         if (await this.endGame(board)) {
-            bot.telegram.sendMessage(chatId, 'Game Over!');
+            const message = 'Game Over!';
+
+            bot.telegram.sendMessage(chatId, message);
+            await this.saveBotMessage(message, username, chatId);
             return;
         } else if (depthLength === 0) {
-            bot.telegram.sendMessage(chatId, 'We Draw!');
+            const message = 'We Draw!';
+
+            bot.telegram.sendMessage(chatId, message);
+            await this.saveBotMessage(message, username, chatId);
             return;
         }
 
@@ -196,26 +215,53 @@ module.exports = class HashGameService {
                 const tryMoviment = this.makeMoviment(coordenate[0], coordenate[1], USER);
          
                 if (!tryMoviment) {
-                    bot.telegram.sendMessage(chatId, 'Invalid Moviment!');
+                    const message = 'Invalid Moviment!';
+                    
+                    bot.telegram.sendMessage(chatId, message);
+                    await this.saveBotMessage(message, username, chatId);
                     this.UserTurn(robotChoice, userChoice, chatId);
                 }
 
-                this.showBoard(board, robotChoice, userChoice, chatId);
-                bot.telegram.sendMessage(chatId, `My turn [${robotChoice}]`);
-                await this.IATurn(robotChoice, userChoice, chatId);
+                const message = `My turn [${robotChoice}]`;
+
+                await this.showBoard(board, robotChoice, userChoice, chatId, username);
+                bot.telegram.sendMessage(chatId, message);
+                await this.saveBotMessage(message, username, chatId);
+                await this.IATurn(robotChoice, userChoice, chatId, username);
             }
         }
     }
 
-    gameLoop = async (robotChoice, userChoice, first, chatId) => {
+    gameLoop = async (robotChoice, userChoice, first, chatId, username) => {
         if (first === 'N') {
-            await this.IATurn(robotChoice, userChoice, chatId);
+            await this.IATurn(robotChoice, userChoice, chatId, username);
             first = '';
         } else {
-            bot.telegram.sendMessage(chatId, `Your turn [${userChoice}]\nUse number (1-9): `);
-            await this.showBoard(board, robotChoice, userChoice, chatId);
+            const message = `Your turn [${userChoice}]\nUse number (1-9): `;
+
+            bot.telegram.sendMessage(chatId, message);
+            await this.saveBotMessage(message, username, chatId);
+
+            await this.showBoard(board, robotChoice, userChoice, chatId, username);
             await this.UserTurn(robotChoice, userChoice, chatId);
         }
 
+    }
+
+    saveBotMessage = async (message, sendTo, chatId) => {
+        try {
+            const botMessage = new Message({
+                username: 'Bot',
+                message: message,
+                date: new Date(),
+                sendTo: sendTo,
+                chatId: chatId
+            });
+
+            await botMessage.save();
+        } catch (error) {
+            console.error('BotService::saveBotMessages ', error);
+            throw `Error ${error}`;
+        }
     }
 }

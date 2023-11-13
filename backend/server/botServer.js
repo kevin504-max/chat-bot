@@ -115,7 +115,8 @@ class BotServer {
         // Listen to /hashGame command
         bot.command('hashGame', async (ctx) => {
             playing = true;
-            ctx.reply('Choose your symbol: X or O');
+            const message = 'Choose your symbol: X or O';
+            ctx.reply(message);
 
             this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
         });
@@ -157,11 +158,11 @@ class BotServer {
                     if (ctx.message.text === 'Y' || ctx.message.text === 'y' || ctx.message.text === 'N' || ctx.message.text === 'n') {
                         first = ctx.message.text.toUpperCase();
 
-                        await hashGameService.gameLoop(robotChoice, userChoice, first, ctx.message.chat.id);
+                        await hashGameService.gameLoop(robotChoice, userChoice, first, ctx.message.chat.id, ctx.message.from.username);
                     }
                     
                     if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(ctx.message.text)) {
-                        await hashGameService.UserTurn(robotChoice, userChoice, ctx.message.chat.id, ctx.message.text);
+                        await hashGameService.UserTurn(robotChoice, userChoice, ctx.message.chat.id, ctx.message.text, ctx.message.from.username);
                     }
 
                     return;
