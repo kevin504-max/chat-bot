@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="py-3">
     <SpinnerComponent :start="spin.value" />
     <router-view />
   </div>

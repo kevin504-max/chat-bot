@@ -1,7 +1,8 @@
 const env = require('../.env')
 const Telegraf = require('telegraf');
-const { BotService } = require('../services');
+const { BotService, HashGameService } = require('../services');
 const botService = new BotService();
+const hashGameService = new HashGameService();
 const { Message } = require('../models/Message');
 // const OpenAI = require('openai');
 
@@ -110,6 +111,20 @@ class BotServer {
             ctx.reply(message);
         });
 
+        let playing = false;
+        // Listen to /hashGame command
+        bot.command('hashGame', async (ctx) => {
+            playing = true;
+            const message = 'Choose your symbol: X or O';
+            ctx.reply(message);
+
+            this.saveBotMessages(message, ctx.message.from.username, ctx.message.chat.id);
+        });
+
+        let first = '';
+        let robotChoice = '';
+        let userChoice = '';
+
         bot.on('message', async (ctx) => {
             try {
                 const chatId = ctx.message.chat.id;
@@ -118,6 +133,38 @@ class BotServer {
                 if (ctx.message.text === 'ping') {
                     this.saveBotMessages('pong', username, chatId);
                     ctx.reply('pong');
+                    return;
+                }
+
+                if (playing) {
+                    if (robotChoice === '' && userChoice === '') {
+                        const symbol = ctx.message.text.toUpperCase();
+        
+                        if (symbol === 'X') {
+                            robotChoice = 'O';
+                            userChoice = 'X';
+        
+                            ctx.reply('You chose X!\nDo you want to start? (Y/N):');
+                        } else if (symbol === 'O') {
+                            robotChoice = 'X';
+                            userChoice = 'O';
+                            
+                            ctx.reply('You chose O!\nDo you want to start? (Y/N):');
+                        } else {
+                            ctx.reply('Invalid choice!\nChoose your symbol: X or O');
+                        }
+                    }
+                    
+                    if (ctx.message.text === 'Y' || ctx.message.text === 'y' || ctx.message.text === 'N' || ctx.message.text === 'n') {
+                        first = ctx.message.text.toUpperCase();
+
+                        await hashGameService.gameLoop(robotChoice, userChoice, first, ctx.message.chat.id, ctx.message.from.username);
+                    }
+                    
+                    if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(ctx.message.text)) {
+                        await hashGameService.UserTurn(robotChoice, userChoice, ctx.message.chat.id, ctx.message.text, ctx.message.from.username);
+                    }
+
                     return;
                 }
 
