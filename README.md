@@ -124,5 +124,5 @@ To access the short and instructive video click [here](https://www.youtube.com/w
 
 ## 🤝 Acknowledgment
 I extend my heartfelt appreciation to Flashvolve for this exciting and engaging technical challenge.
-This challenge has allowed me to showcase my skills and creativity in the realms of Vue.js and Node.js 
+It allowed me to showcase my skills and creativity in the realms of Vue.js and Node.js 
 while focusing on seamless integration with the Telegram API.
