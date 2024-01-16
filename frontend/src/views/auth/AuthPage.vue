@@ -34,7 +34,9 @@
                       <label class="form-label mt-3" for="form3Example4c">Password</label>
                     </div>
                   </div>
-                  <p class="text-success">*Remember to start the bot before make the authentication!</p>
+                  <p class="text-success">
+                    *Remember to start the bot before make the authentication! Click <a href="https://t.me/FullstackAPIBot" target="_blank">here</a> to start the bot.
+                  </p>
                   <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4 gap-3">
                     <button type="submit" class="btn btn-primary btn-lg">Login</button>
                     <button
